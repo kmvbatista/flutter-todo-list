@@ -24,9 +24,6 @@ class HomePage extends StatefulWidget {
   var items = new List<Item>();
   HomePage() {
     items = [];
-    items.add(Item(title: "item 1", done: false));
-    items.add(Item(title: "item 2", done: true));
-    items.add(Item(title: "item 3", done: false));
   }
   @override
   _HomePageState createState() => _HomePageState();
@@ -42,12 +39,14 @@ class _HomePageState extends State<HomePage> {
         Item(title: newTaskCtrl.text, done: false),
       );
       newTaskCtrl.clear();
+      save();
     });
   }
 
   void remove(index) {
     setState(() {
       widget.items.removeAt(index);
+      save();
     });
   }
 
@@ -105,6 +104,7 @@ class _HomePageState extends State<HomePage> {
                 onChanged: (value) {
                   setState(() {
                     item.done = value;
+                    save();
                   });
                 },
               ),
