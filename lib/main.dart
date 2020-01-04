@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/item.dart';
 
 void main() => runApp(MyApp());
@@ -44,6 +44,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void remove(index) {
+    setState(() {
+      widget.items.removeAt(index);
+    });
+  }
+
+  Future load() async {
+    var prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString('data');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,15 +74,23 @@ class _HomePageState extends State<HomePage> {
           itemCount: widget.items.length,
           itemBuilder: (BuildContext ctxt, int index) {
             final item = widget.items[index];
-            return CheckboxListTile(
-              title: Text(item.title),
+            return Dismissible(
               key: Key(item.title),
-              value: item.done,
-              onChanged: (value) {
-                setState(() {
-                  item.done = value;
-                });
+              background: Container(
+                color: Colors.red.withOpacity(0.5),
+              ),
+              onDismissed: (direction) {
+                remove(index);
               },
+              child: CheckboxListTile(
+                title: Text(item.title),
+                value: item.done,
+                onChanged: (value) {
+                  setState(() {
+                    item.done = value;
+                  });
+                },
+              ),
             );
           }),
       floatingActionButton: FloatingActionButton(
